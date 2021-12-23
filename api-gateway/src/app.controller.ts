@@ -68,12 +68,6 @@ criar(@Body() payload: PayloadTeste) {
   this.client.emit('criar', payload);
 }
 
-@Post("criar2")
-criar2(@Body() payload: PayloadTeste) {
-  console.log(payload);
-  this.client.emit('criar', payload);
-}
-
 @Post("criar-pedido")
   criarPedido(@Body() payload: PayloadTeste) {
     console.log(payload);
@@ -86,10 +80,10 @@ criar2(@Body() payload: PayloadTeste) {
   }
 
 
-  @Get()
-  consultarCategorias(@Query('idCategoria') _id: string): Observable<any> {
+  @Get("consultar")
+  consultarCategorias(): Observable<any> {
 
-    return this.client.send('consultar', _id ? _id : '')
+    return this.client.send('consultar', '')
 
   }
 
