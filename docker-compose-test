@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app-network
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api-gateway
+    container_name: api-gateway
+    # restart: unless-stopped
+    volumes:
+      - ./api-gateway:/home/node/app
+      - ./api-gateway/node_modules:/home/node/app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    depends_on:
+      - rabbitmq
+  microservice-fiscal:
+    build:
+      context: ./microservice-fiscal
+      dockerfile: Dockerfile
+    image: microservice-fiscal
+    container_name: microservice-fiscal
+    # restart: unless-stopped
+    volumes:
+      - ./microservice-fiscal:/home/node/app
+      - ./microservice-fiscal/node_modules:/home/node/app/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - rabbitmq
+  microservice-logistica:
+    build:
+      context: ./microservice-logistica
+      dockerfile: Dockerfile
+    image: microservice-logistica
+    container_name: microservice-logistica
+    # restart: unless-stopped
+    volumes:
+      - ./microservice-logistica:/home/node/app
+      - ./microservice-logistica/node_modules:/home/node/app/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - rabbitmq
+
+networks:
+  app-network:
+    driver: bridge
